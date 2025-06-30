@@ -1,0 +1,167 @@
+---
+import { Button } from '@/components/ui/button'
+import { Icon } from 'astro-icon/components'
+
+interface Props {
+  title: string
+  url: string
+  description?: string
+}
+
+const { title, url, description } = Astro.props
+
+// Encode the data for URLs
+const encodedTitle = encodeURIComponent(title)
+const encodedUrl = encodeURIComponent(url)
+const encodedDescription = encodeURIComponent(description || '')
+
+// Social media share URLs
+const shareUrls = {
+  twitter: `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`,
+  facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
+  linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
+  telegram: `https://t.me/share/url?url=${encodedUrl}&text=${encodedTitle}`,
+  whatsapp: `https://wa.me/?text=${encodedTitle}%20${encodedUrl}`,
+  copy: url
+}
+---
+
+<div class="flex flex-col gap-3">
+  <h3 class="text-sm font-medium text-muted-foreground">Bagikan Artikel</h3>
+
+  <div class="flex flex-wrap gap-2">
+    <!-- Twitter -->
+    <Button
+      variant="outline"
+      size="sm"
+      data-share="twitter"
+      data-url={shareUrls.twitter}
+      class="flex items-center gap-2 hover:bg-blue-50 hover:border-blue-200 hover:text-blue-600"
+    >
+      <Icon name="lucide:twitter" class="size-4" />
+      <span class="hidden sm:inline">Twitter</span>
+    </Button>
+
+    <!-- Facebook -->
+    <Button
+      variant="outline"
+      size="sm"
+      data-share="facebook"
+      data-url={shareUrls.facebook}
+      class="flex items-center gap-2 hover:bg-blue-50 hover:border-blue-200 hover:text-blue-600"
+    >
+      <Icon name="lucide:facebook" class="size-4" />
+      <span class="hidden sm:inline">Facebook</span>
+    </Button>
+
+    <!-- LinkedIn -->
+    <Button
+      variant="outline"
+      size="sm"
+      data-share="linkedin"
+      data-url={shareUrls.linkedin}
+      class="flex items-center gap-2 hover:bg-blue-50 hover:border-blue-200 hover:text-blue-600"
+    >
+      <Icon name="lucide:linkedin" class="size-4" />
+      <span class="hidden sm:inline">LinkedIn</span>
+    </Button>
+
+    <!-- Telegram -->
+    <Button
+      variant="outline"
+      size="sm"
+      data-share="telegram"
+      data-url={shareUrls.telegram}
+      class="flex items-center gap-2 hover:bg-blue-50 hover:border-blue-200 hover:text-blue-600"
+    >
+      <Icon name="lucide:send" class="size-4" />
+      <span class="hidden sm:inline">Telegram</span>
+    </Button>
+
+    <!-- WhatsApp -->
+    <Button
+      variant="outline"
+      size="sm"
+      data-share="whatsapp"
+      data-url={shareUrls.whatsapp}
+      class="flex items-center gap-2 hover:bg-green-50 hover:border-green-200 hover:text-green-600"
+    >
+      <Icon name="lucide:message-circle" class="size-4" />
+      <span class="hidden sm:inline">WhatsApp</span>
+    </Button>
+
+    <!-- Copy Link -->
+    <Button
+      variant="outline"
+      size="sm"
+      data-share="copy"
+      data-url={shareUrls.copy}
+      class="flex items-center gap-2 hover:bg-gray-50 hover:border-gray-200 hover:text-gray-600"
+      id="copy-link-btn"
+    >
+      <Icon name="lucide:copy" class="size-4" />
+      <span class="hidden sm:inline">Salin Link</span>
+    </Button>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    // Handle social media sharing
+    const shareButtons = document.querySelectorAll('[data-share]:not([data-share="copy"])')
+    shareButtons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        e.preventDefault()
+        const url = button.getAttribute('data-url')
+        if (url) {
+          window.open(url, '_blank', 'width=600,height=400,scrollbars=yes,resizable=yes')
+        }
+      })
+    })
+
+    // Handle copy link functionality
+    const copyButton = document.getElementById('copy-link-btn')
+    if (copyButton) {
+      copyButton.addEventListener('click', async (e) => {
+        e.preventDefault()
+        const url = copyButton.getAttribute('data-url')
+
+        try {
+          await navigator.clipboard.writeText(url)
+
+          // Change button text temporarily
+          const span = copyButton.querySelector('span')
+          const icon = copyButton.querySelector('svg')
+          const originalText = span?.textContent
+
+          if (span) span.textContent = 'Tersalin!'
+          if (icon) icon.setAttribute('name', 'lucide:check')
+
+          setTimeout(() => {
+            if (span) span.textContent = originalText
+            if (icon) icon.setAttribute('name', 'lucide:copy')
+          }, 2000)
+
+        } catch (err) {
+          console.error('Failed to copy: ', err)
+          // Fallback for older browsers
+          const textArea = document.createElement('textarea')
+          textArea.value = url
+          document.body.appendChild(textArea)
+          textArea.select()
+          document.execCommand('copy')
+          document.body.removeChild(textArea)
+
+          const span = copyButton.querySelector('span')
+          if (span) {
+            const originalText = span.textContent
+            span.textContent = 'Tersalin!'
+            setTimeout(() => {
+              span.textContent = originalText
+            }, 2000)
+          }
+        }
+      })
+    }
+  })
+</script>

@@ -1,0 +1,68 @@
+---
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import Link from '@/components/Link.astro'
+import PageHead from '@/components/PageHead.astro'
+import Layout from '@/layouts/Layout.astro'
+---
+
+<Layout class="max-w-3xl">
+  <PageHead slot="head" title="Tentang Kriptowang.id" />
+  <Breadcrumbs items={[{ label: 'Tentang', icon: 'lucide:info' }]} />
+
+  <section>
+    <div class="min-w-full">
+      <div class="prose mb-8">
+        <p class="mt-0">
+          <strong>Kriptowang.id</strong> adalah portal cryptocurrency terpercaya di Indonesia yang
+          berdedikasi untuk menyajikan informasi, edukasi, dan analisis terbaru tentang dunia crypto.
+          Kami hadir untuk membantu masyarakat Indonesia memahami dan menavigasi ekosistem blockchain
+          dengan aman dan bertanggung jawab.
+        </p>
+        <p>
+          Tim redaksi kami terdiri dari para ahli blockchain, trader berpengalaman, dan enthusiast
+          cryptocurrency yang berkomitmen untuk menyediakan konten berkualitas tinggi dalam bahasa Indonesia.
+          Kami percaya bahwa edukasi yang tepat adalah kunci untuk adopsi cryptocurrency yang sehat di Indonesia.
+        </p>
+        <h3>Visi & Misi</h3>
+        <p>
+          <strong>Visi:</strong> Menjadi sumber informasi cryptocurrency terdepan dan terpercaya di Indonesia.
+        </p>
+        <p>
+          <strong>Misi:</strong>
+        </p>
+        <ul>
+          <li>Menyediakan edukasi cryptocurrency yang mudah dipahami untuk semua kalangan</li>
+          <li>Memberikan analisis pasar yang objektif dan berdasarkan data</li>
+          <li>Membantu investor membuat keputusan yang informed dan aman</li>
+          <li>Mendukung adopsi teknologi blockchain di Indonesia</li>
+        </ul>
+        <h3>Disclaimer</h3>
+        <p>
+          Seluruh konten di Kriptowang.id disusun untuk tujuan edukasi dan bukan merupakan saran investasi.
+          Cryptocurrency adalah investasi berisiko tinggi. Selalu lakukan riset mandiri dan konsultasikan
+          dengan ahli keuangan sebelum membuat keputusan investasi.
+        </p>
+      </div>
+
+      <h2 class="mb-4 text-2xl font-medium">Topik Utama</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="p-4 border rounded-lg">
+          <h3 class="font-semibold mb-2">🪙 Cryptocurrency Basics</h3>
+          <p class="text-sm text-muted-foreground">Panduan lengkap tentang Bitcoin, Ethereum, dan cryptocurrency populer lainnya.</p>
+        </div>
+        <div class="p-4 border rounded-lg">
+          <h3 class="font-semibold mb-2">💰 Investasi & Trading</h3>
+          <p class="text-sm text-muted-foreground">Strategi investasi, analisis teknikal, dan manajemen risiko.</p>
+        </div>
+        <div class="p-4 border rounded-lg">
+          <h3 class="font-semibold mb-2">🛡️ Keamanan & Wallet</h3>
+          <p class="text-sm text-muted-foreground">Best practices untuk menjaga keamanan aset crypto Anda.</p>
+        </div>
+        <div class="p-4 border rounded-lg">
+          <h3 class="font-semibold mb-2">🏦 DeFi & Web3</h3>
+          <p class="text-sm text-muted-foreground">Dunia decentralized finance dan aplikasi blockchain terbaru.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,13 @@
+---
+import { getAllAuthors } from '@/lib/data-utils'
+
+export async function getStaticPaths() {
+  const authors = await getAllAuthors()
+  return authors.map((author) => ({
+    params: { id: author.id },
+  }))
+}
+
+// Redirect to the first page of the author's posts
+return Astro.redirect(`/authors/${Astro.params.id}/1`)
+---

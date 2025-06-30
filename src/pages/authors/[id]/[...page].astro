@@ -1,0 +1,87 @@
+---
+import AuthorCard from '@/components/AuthorCard.astro'
+import BlogCard from '@/components/BlogCard.astro'
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import PageHead from '@/components/PageHead.astro'
+import PaginationComponent from '@/components/ui/pagination'
+import { SITE } from '@/consts'
+import Layout from '@/layouts/Layout.astro'
+import { getAllAuthors, getPostsByAuthor } from '@/lib/data-utils'
+import type { PaginateFunction } from 'astro'
+
+export async function getStaticPaths({
+  paginate,
+}: {
+  paginate: PaginateFunction
+}) {
+  const authors = await getAllAuthors()
+
+  const allPaths: any[] = []
+
+  for (const author of authors) {
+    const authorPosts = await getPostsByAuthor(author.id)
+    const filteredPosts = authorPosts.filter((post) => !post.data.draft)
+
+    const paginatedPages = paginate(filteredPosts, {
+      pageSize: SITE.postsPerPage,
+      params: { id: author.id },
+      props: { author }
+    })
+
+    allPaths.push(...paginatedPages)
+  }
+
+  return allPaths
+}
+
+const { page, author } = Astro.props
+---
+
+<Layout class="max-w-3xl">
+  <PageHead
+    slot="head"
+    title={`${author.data.name} - Laman ${page.currentPage}`}
+    description={author.data.bio || `Profil ${author.data.name}.`}
+    noindex
+  />
+  <Breadcrumbs
+    collapseOnMobile={true}
+    items={[
+      { href: '/authors', label: 'Penulis', icon: 'lucide:users' },
+      { label: author.data.name, icon: 'lucide:user' },
+      { label: `Laman ${page.currentPage}`, icon: 'lucide:book-copy' },
+    ]}
+  />
+
+  <section>
+    <AuthorCard author={author} />
+  </section>
+
+  <section class="flex flex-col gap-y-4">
+    <h2 class="text-2xl font-medium">Artikel oleh {author.data.name}</h2>
+    {
+      page.data.length > 0 ? (
+        <ul class="flex flex-col gap-4">
+          {page.data.map((post) => (
+            <li>
+              <BlogCard entry={post} />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="text-muted-foreground">
+          Belum ada artikel dari penulis ini.
+        </p>
+      )
+    }
+  </section>
+
+  {page.lastPage > 1 && (
+    <PaginationComponent
+      currentPage={page.currentPage}
+      totalPages={page.lastPage}
+      baseUrl={`/authors/${author.id}/`}
+      client:load
+    />
+  )}
+</Layout>
